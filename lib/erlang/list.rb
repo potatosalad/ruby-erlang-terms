@@ -6,8 +6,13 @@ module Erlang
       tail != []
     end
 
-    def tail
-      @tail ||= []
+    def tail(value = nil)
+      if value
+        self.tail = value
+        self
+      else
+        @tail ||= []
+      end
     end
 
     def inspect

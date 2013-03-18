@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Erlang::List do
   describe '#inspect' do
     context 'improper list' do
-      subject { Erlang::List[:a].tap { |list| list.tail = :b } }
+      subject { Erlang::List[:a].tail(:b) }
 
       it { should be_improper }
       it 'formats as #<Erlang::List [:a | :b]>' do
