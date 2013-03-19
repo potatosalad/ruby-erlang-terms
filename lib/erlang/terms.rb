@@ -7,6 +7,7 @@ end
 
 require "erlang/export"
 require "erlang/list"
+require "erlang/nil"
 require "erlang/pid"
 require "erlang/string"
 require "erlang/tuple"

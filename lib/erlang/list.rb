@@ -20,7 +20,25 @@ module Erlang
     end
 
     def pretty_inspect
-      "#<#{self.class.name} #{super[0..-3]} | #{tail.inspect}]>\n"
+      "#<#{self.class.name} #{super[0..-2]}>\n"
+    end
+
+    def pretty_print(q)
+      q.group(1, '[', " | #{tail.inspect}]") {
+        q.seplist(self) { |v|
+          q.pp v
+        }
+      }
+    end
+
+    def ==(other)
+      if improper? and not other.respond_to?(:tail)
+        false
+      elsif other.respond_to?(:tail)
+        super && tail == other.tail
+      else
+        super
+      end
     end
   end
 end

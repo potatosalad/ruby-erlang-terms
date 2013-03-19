@@ -72,6 +72,17 @@ list.improper?
 # => false
 ```
 
+### Erlang::Nil
+
+```erlang
+Nil = [].
+```
+
+```ruby
+erlang_nil = Erlang::Nil.new
+# => #<Erlang::Nil []>
+```
+
 ### Erlang::Pid
 
 ```erlang

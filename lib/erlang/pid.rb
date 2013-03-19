@@ -19,5 +19,13 @@ module Erlang
       "  @node=#{node.inspect}\n" <<
       "  @creation=#{creation.inspect}>"
     end
+
+    def ==(other)
+      self.class === other &&
+      node.to_s == other.node.to_s &&
+      id.to_s   == other.id.to_s &&
+      serial    == other.serial &&
+      creation  == other.creation
+    end
   end
 end

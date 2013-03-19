@@ -20,4 +20,20 @@ describe Erlang::List do
       end
     end
   end
+
+  it 'has | [] in pretty_inspect' do
+    expect(Erlang::List[:a].pretty_inspect).to include("| []")
+  end
+
+  context '#==' do
+    subject { Erlang::List[:a, :b] }
+
+    it 'compares with other lists' do
+      expect(subject).to eq(subject)
+      expect(subject).to eq(Erlang::List[:a, :b])
+      expect(subject).to_not eq(Erlang::List[:a, :b].tail(:c))
+      expect(subject).to eq([:a, :b])
+      expect(Erlang::List[:a].tail(:c)).to_not eq([:a])
+    end
+  end
 end
