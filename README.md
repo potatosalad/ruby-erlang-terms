@@ -1,6 +1,4 @@
-# Erlang::Terms
-
-[![Build Status](https://travis-ci.org/potatosalad/erlang-terms.png)](https://travis-ci.org/potatosalad/erlang-terms)
+# Erlang::Terms [![Build Status](https://travis-ci.org/potatosalad/erlang-terms.png)](https://travis-ci.org/potatosalad/erlang-terms) [![Coverage Status](https://coveralls.io/repos/potatosalad/erlang-terms/badge.png)](https://coveralls.io/r/potatosalad/erlang-terms)
 
 Includes simple classes that represent Erlang's export, list, pid, string, tuple, and map.
 
