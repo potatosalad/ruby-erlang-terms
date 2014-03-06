@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/potatosalad/erlang-terms.png)](https://travis-ci.org/potatosalad/erlang-terms)
 
-Includes simple classes that represent Erlang's export, list, pid, string, and tuple.
+Includes simple classes that represent Erlang's export, list, pid, string, tuple, and map.
 
 ## Installation
 
@@ -70,6 +70,17 @@ list = Erlang::List[:a, :b]
 # => #<Erlang::List [:a, :b | []]">
 list.improper?
 # => false
+```
+
+### Erlang::Map
+
+```erlang
+Map = #{atom => 1}.
+```
+
+```ruby
+map = Erlang::Map[:atom, 1]
+# => #<Erlang::Map #{:atom => 1}>
 ```
 
 ### Erlang::Nil
