@@ -9,7 +9,7 @@ Includes simple immutable classes that represent Erlang's atom, binary, bitstrin
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'erlang-terms'
+gem 'erlang-terms', '~> 2.0'
 ```
 
 And then execute:
