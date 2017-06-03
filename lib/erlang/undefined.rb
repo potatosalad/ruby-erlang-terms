@@ -1,8 +1,4 @@
-require 'singleton'
-
 module Erlang
-  # A list without any elements. This is a singleton, since all empty lists are equivalent.
-  #
   # Licensing
   # =========
   #
@@ -30,49 +26,7 @@ module Erlang
   #     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   #
   # @private
-  class EmptyList
-    include Singleton
-    include Erlang::Term
-    include Erlang::List
-    include Erlang::Immutable
-
-    # @private
-    def hash
-      return Erlang::EmptyList.hash
-    end
-
-    # There is no first item in an empty list, so return `Undefined`.
-    # @return [Undefined]
-    def head
-      return Erlang::Undefined
-    end
-    alias :first :head
-
-    # There are no subsequent elements, so return an empty list.
-    # @return [self]
-    def tail
-      return self
-    end
-
-    def empty?
-      return true
-    end
-
-    def improper?
-      return false
-    end
-
-    # Return the number of items in this `List`.
-    # @return [Integer]
-    def size
-      return 0
-    end
-    alias :length :size
+  module Undefined
   end
-
-  # A list without any elements. This is a singleton, since all empty lists are equivalent.
-  Nil = EmptyList.instance
-
-  # @private
-  EmptyList.freeze
+  Undefined.freeze
 end

@@ -1,3 +1,6 @@
 --no-private
 --main README.md
 --markup markdown
+-
+docs/*.md
+*.md
