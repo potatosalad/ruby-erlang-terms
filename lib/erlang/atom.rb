@@ -34,10 +34,10 @@ module Erlang
     class << self
       # Create a new `Atom` populated with the given `data` and `utf8` flag.
       # @param data [::String, Symbol, ::Enumerable, Integer] The content of the `Atom`
-      # @param utf8 [Boolean] Whether the `Atom` should be considered UTF-8 or not
+      # @param utf8 [Boolean] Whether the `Atom` should be considered UTF-8 or not (defaults to `true`)
       # @return [Atom]
       # @raise [ArgumentError] if `data` cannot be coerced to be a `::String`
-      def [](*data, utf8: false)
+      def [](*data, utf8: true)
         return EmptyAtom if data.empty?
         if data.size == 1
           return data[0] if data[0].is_a?(Erlang::Atom)
@@ -103,7 +103,7 @@ module Erlang
     end
 
     # @private
-    def initialize(data = ::String.new.freeze, utf8 = false)
+    def initialize(data = ::String.new.freeze, utf8 = true)
       raise ArgumentError, 'data must be a String' if not data.is_a?(::String)
       @valid_utf8, data = Erlang::Terms.utf8_encoding(data)
       @printable = Erlang::Terms.printable?(data)
@@ -120,7 +120,7 @@ module Erlang
         @internal = @data.intern
       end
       valid_internal = false
-      if @utf8 == false and @valid_utf8 and @printable
+      if @utf8 == true and @valid_utf8 and @printable
         begin
           if @internal == eval(@internal.inspect)
             valid_internal = true
@@ -190,8 +190,8 @@ module Erlang
     def inspect
       if @valid_internal
         return @internal.inspect
-      elsif @utf8 == true
-        return "Erlang::Atom[#{@data.inspect}, utf8: true]"
+      elsif @utf8 == false
+        return "Erlang::Atom[#{@data.inspect}, utf8: false]"
       else
         return "Erlang::Atom[#{@data.inspect}]"
       end

@@ -8,12 +8,12 @@ class Erlang::AtomTest < Minitest::Test
     lhs = Erlang::Atom[:test]
     assert_equal lhs, Erlang::Atom[:test]
     refute_equal lhs, Erlang::Atom[:bad]
-    refute_equal lhs, Erlang::Atom[:test, utf8: true]
+    refute_equal lhs, Erlang::Atom[:test, utf8: false]
     assert_equal lhs, Erlang::Atom["test"]
     assert_equal lhs, Erlang::Atom["t", "e", :s, "t"]
     lhs = Erlang::Atom["\x00\xCE"]
     assert_equal lhs, Erlang::Atom[0, 206]
-    refute_equal lhs, Erlang::Atom[0, 206, utf8: true]
+    refute_equal lhs, Erlang::Atom[0, 206, utf8: false]
     assert_raises(ArgumentError) { Erlang::Atom[Object.new] }
   end
 
@@ -32,10 +32,10 @@ class Erlang::AtomTest < Minitest::Test
 
   def test_erlang_inspect
     assert_equal "'test'", Erlang::Atom[:test].erlang_inspect
-    assert_equal "'test'", Erlang::Atom[:test, utf8: true].erlang_inspect
+    assert_equal "'test'", Erlang::Atom[:test, utf8: false].erlang_inspect
     assert_equal "'test'", Erlang.inspect(:test)
-    assert_equal "'\\xCE\\xA9'", Erlang::Atom[:Ω].erlang_inspect
-    assert_equal "'Ω'", Erlang::Atom[:Ω, utf8: true].erlang_inspect
+    assert_equal "'\\xCE\\xA9'", Erlang::Atom[:Ω, utf8: false].erlang_inspect
+    assert_equal "'Ω'", Erlang::Atom[:Ω].erlang_inspect
     assert_equal "'true'", Erlang.inspect(true)
     assert_equal "'false'", Erlang.inspect(false)
     assert_equal "'nil'", Erlang.inspect(nil)
@@ -44,9 +44,9 @@ class Erlang::AtomTest < Minitest::Test
   def test_inspect
     assert_equal ":test", Erlang::Atom[:test].inspect
     assert_equal ":Ω", Erlang::Atom[:Ω].inspect
-    assert_equal "Erlang::Atom[\"Ω\", utf8: true]", Erlang::Atom[:Ω, utf8: true].inspect
+    assert_equal "Erlang::Atom[\"Ω\", utf8: false]", Erlang::Atom[:Ω, utf8: false].inspect
     assert_equal "Erlang::Atom[\"\\x00\\xCE\"]", Erlang::Atom["\x00\xCE"].inspect
-    assert_equal "Erlang::Atom[\"\\x00\\xCE\", utf8: true]", Erlang::Atom["\x00\xCE", utf8: true].inspect
+    assert_equal "Erlang::Atom[\"\\x00\\xCE\", utf8: false]", Erlang::Atom["\x00\xCE", utf8: false].inspect
     assert_equal "true", Erlang::Atom[true].inspect
     assert_equal "false", Erlang::Atom[false].inspect
     assert_equal "nil", Erlang::Atom[nil].inspect
@@ -87,13 +87,13 @@ class Erlang::AtomTest < Minitest::Test
     lhs = Erlang::Atom[:Ω]
     rhs = Marshal.load(Marshal.dump(lhs))
     assert_equal lhs, rhs
-    lhs = Erlang::Atom[:Ω, utf8: true]
+    lhs = Erlang::Atom[:Ω, utf8: false]
     rhs = Marshal.load(Marshal.dump(lhs))
     assert_equal lhs, rhs
     lhs = Erlang::Atom["\x00\xCE"]
     rhs = Marshal.load(Marshal.dump(lhs))
     assert_equal lhs, rhs
-    lhs = Erlang::Atom["\x00\xCE", utf8: true]
+    lhs = Erlang::Atom["\x00\xCE", utf8: false]
     rhs = Marshal.load(Marshal.dump(lhs))
     assert_equal lhs, rhs
     lhs = Erlang::Atom[true]

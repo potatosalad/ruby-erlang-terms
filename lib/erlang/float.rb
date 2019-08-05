@@ -36,9 +36,11 @@ module Erlang
       # @raise [ArgumentError] if `data` cannot be coerced to be a `::BigDecimal`
       def [](data, old: false)
         if data.is_a?(::String)
-          data = ::BigDecimal.new(data)
+          data = ::Kernel::BigDecimal(data)
+        elsif data.is_a?(::Rational)
+          data = ::Kernel::BigDecimal(data.to_f.to_s)
         elsif not data.is_a?(::BigDecimal)
-          data = ::BigDecimal.new(data.to_s)
+          data = ::Kernel::BigDecimal(data.to_s)
         end
         return new(data, old)
       end
@@ -63,7 +65,7 @@ module Erlang
       @data = data.freeze
       @old  = !!old
       if @old == false and @data != @data.to_f
-        @data = ::BigDecimal.new(@data.to_f.to_s).freeze
+        @data = ::Kernel::BigDecimal(@data.to_f.to_s).freeze
       end
       raise ArgumentError, "data cannot be positive or negative Infinity: #{data.inspect}" if @data.to_s.include?("Infinity")
     end
@@ -189,7 +191,7 @@ module Erlang
     # @private
     def marshal_load(args)
       float_string, old = args
-      initialize(::BigDecimal.new(float_string), old)
+      initialize(::Kernel::BigDecimal(float_string), old)
       __send__(:immutable!)
       return self
     end

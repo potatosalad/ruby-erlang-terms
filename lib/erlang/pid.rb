@@ -5,6 +5,8 @@ module Erlang
   #
   #     Erlang::Pid["nonode@nohost", 38, 0, 0]
   #     # => Erlang::Pid[:"nonode@nohost", 38, 0, 0]
+  #     Erlang::Pid["nonode@nohost", 38, 0, 0, new_pid: false]
+  #     # => Erlang::Pid[:"nonode@nohost", 38, 0, 0, new_pid: false]
   #
   class Pid
     include Erlang::Term
@@ -26,16 +28,21 @@ module Erlang
     # @return [Integer]
     attr_reader :creation
 
+    # Return true if this `Pid` is a new pid
+    # @return [Boolean]
+    attr_reader :new_pid
+
     class << self
       # Create a new `Pid` populated with the given `node`, `id`, `serial`, and `creation`.
       # @param node [Atom, Symbol] The node atom
       # @param id [Integer] The id as a non-negative integer
       # @param serial [Integer] The serial time as a non-negative integer
       # @param creation [Integer] The creation time as a non-negative integer
+      # @param new_pid [Boolean] Whether the new pid format is used or not (defaults to `true`)
       # @return [Pid]
       # @raise [ArgumentError] if `node` is not an `Atom` or one of `id`, `serial`, or `creation` are not non-negative `Integer`s
-      def [](node, id, serial = 0, creation = 0)
-        return new(node, id, serial, creation)
+      def [](node, id, serial = 0, creation = 0, new_pid: true)
+        return new(node, id, serial, creation, new_pid)
       end
 
       # Compares `a` and `b` and returns whether they are less than,
@@ -60,7 +67,7 @@ module Erlang
     end
 
     # @private
-    def initialize(node, id, serial = 0, creation = 0)
+    def initialize(node, id, serial = 0, creation = 0, new_pid = true)
       raise ArgumentError, 'id must be a non-negative Integer' if not id.is_a?(::Integer) or id < 0
       raise ArgumentError, 'serial must be a non-negative Integer' if not serial.is_a?(::Integer) or serial < 0
       raise ArgumentError, 'creation must be a non-negative Integer' if not creation.is_a?(::Integer) or creation < 0
@@ -68,6 +75,7 @@ module Erlang
       @id = id.freeze
       @serial = serial.freeze
       @creation = creation.freeze
+      @new_pid = !!new_pid
     end
 
     # @private
@@ -93,11 +101,20 @@ module Erlang
     end
     alias :== :eql?
 
+    # Return true if this `Pid` is a new pid
+    #
+    # @return [Boolean]
+    def new_pid?
+      return @new_pid
+    end
+
     # Return the contents of this `Pid` as a Erlang-readable `::String`.
     #
     # @example
     #     Erlang::Pid["nonode@nohost", 38, 0, 0].erlang_inspect
     #     # => "{'pid','nonode@nohost',38,0,0}"
+    #     Erlang::Pid["nonode@nohost", 38, 0, 0, new_pid: false].erlang_inspect
+    #     # => "{'pid','nonode@nohost',38,0,0,'false'}"
     #
     # @return [::String]
     def erlang_inspect(raw = false)
@@ -106,26 +123,32 @@ module Erlang
         result << Erlang.inspect(Erlang.term_to_binary(self), raw: raw)
         result << ')'
         return result
-      else
+      elsif new_pid?
         return Erlang.inspect(Erlang::Tuple[:pid, node, id, serial, creation], raw: raw)
+      else
+        return Erlang.inspect(Erlang::Tuple[:pid, node, id, serial, creation, new_pid], raw: raw)
       end
     end
 
     # @return [::String] the nicely formatted version of the `Pid`.
     def inspect
-      return "Erlang::Pid[#{node.inspect}, #{id.inspect}, #{serial.inspect}, #{creation.inspect}]"
+      if new_pid?
+        return "Erlang::Pid[#{node.inspect}, #{id.inspect}, #{serial.inspect}, #{creation.inspect}]"
+      else
+        return "Erlang::Pid[#{node.inspect}, #{id.inspect}, #{serial.inspect}, #{creation.inspect}, new_pid: #{new_pid.inspect}]"
+      end
     end
 
     # @return [::Array]
     # @private
     def marshal_dump
-      return [@node, @id, @serial, @creation]
+      return [@node, @id, @serial, @creation, @new_pid]
     end
 
     # @private
     def marshal_load(args)
-      node, id, serial, creation = args
-      initialize(node, id, serial, creation)
+      node, id, serial, creation, new_pid = args
+      initialize(node, id, serial, creation, new_pid)
       __send__(:immutable!)
       return self
     end

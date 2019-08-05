@@ -8,10 +8,10 @@ env:
     - RUBYOPT="-W0"
 
 rvm:
-  - 2.4.1
+  - 2.6.3
 
 notifications:
   email: false
 
 before_install:
-  - "gem install bundler -v 1.15.1"
+  - "gem install bundler -v 2.0.2"
